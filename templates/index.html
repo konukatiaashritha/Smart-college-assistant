@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart College Assistant</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=4" />
+</head>
+<body>
+
+<!-- ================================================================
+     TOP NAVIGATION BAR
+     ================================================================ -->
+<nav class="topnav" role="banner">
+  <div class="topnav-brand">
+    <div class="topnav-logo" aria-hidden="true">🎓</div>
+    <div>
+      <span class="topnav-name">Smart College Assistant</span>
+      <span class="topnav-tagline">Your 24/7 College Information Guide</span>
+    </div>
+  </div>
+
+  <div class="topnav-spacer"></div>
+
+  <div class="topnav-status" aria-label="Chatbot status: online">
+    <span class="status-dot" aria-hidden="true"></span>
+    Online
+  </div>
+
+  <div class="topnav-profile" aria-label="Student profile" title="Student">S</div>
+</nav>
+
+<!-- ================================================================
+     APP BODY — sidebar + workspace + right panel
+     ================================================================ -->
+<div class="app-body">
+
+  <!-- ── LEFT SIDEBAR ───────────────────────────────────────────── -->
+  <aside class="sidebar" role="navigation" aria-label="Main navigation">
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Menu</div>
+
+      <button class="nav-item active" data-view="chat" aria-current="page">
+        <span class="nav-icon" aria-hidden="true">💬</span>
+        <span>Chat Assistant</span>
+      </button>
+
+      <button class="nav-item" data-view="faqs">
+        <span class="nav-icon" aria-hidden="true">📋</span>
+        <span>FAQs</span>
+        <span class="nav-badge" id="faqCountBadge">22</span>
+      </button>
+
+      <button class="nav-item" data-view="history">
+        <span class="nav-icon" aria-hidden="true">🕐</span>
+        <span>My History</span>
+      </button>
+
+      <button class="nav-item" data-view="feedback">
+        <span class="nav-icon" aria-hidden="true">⭐</span>
+        <span>Feedback</span>
+      </button>
+
+      <button class="nav-item" data-view="about">
+        <span class="nav-icon" aria-hidden="true">ℹ️</span>
+        <span>About</span>
+      </button>
+    </div>
+
+    <hr class="sidebar-divider" />
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Quick Topics</div>
+
+      <button class="nav-item" data-quicktopic="What is the admission process?">
+        <span class="nav-icon" aria-hidden="true">📝</span>
+        <span>Admissions</span>
+      </button>
+      <button class="nav-item" data-quicktopic="What courses are offered by the college?">
+        <span class="nav-icon" aria-hidden="true">📚</span>
+        <span>Courses</span>
+      </button>
+      <button class="nav-item" data-quicktopic="Where can I find the fee structure?">
+        <span class="nav-icon" aria-hidden="true">💰</span>
+        <span>Fees</span>
+      </button>
+      <button class="nav-item" data-quicktopic="Where can I find the examination timetable?">
+        <span class="nav-icon" aria-hidden="true">📅</span>
+        <span>Examinations</span>
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ── CENTRAL WORKSPACE ──────────────────────────────────────── -->
+  <main class="workspace" role="main">
+
+    <!-- ===== CHAT VIEW ===== -->
+    <section class="view-panel active" id="view-chat" aria-label="Chat assistant">
+
+      <div class="chat-header">
+        <span class="chat-header-icon" aria-hidden="true">🤖</span>
+        <div>
+          <div class="chat-header-title">Chat Assistant</div>
+          <div class="chat-header-sub">Ask any college-related question</div>
+        </div>
+      </div>
+
+      <!-- Welcome screen with category cards + suggested questions -->
+      <div id="welcomeScreen" class="welcome-screen">
+        <div class="welcome-hero">
+          <div class="welcome-hero-emoji" aria-hidden="true">👋</div>
+          <h2>Hello! How can I help you today?</h2>
+          <p>Ask me about admissions, courses, fees, examinations, library, hostel, transport, scholarships, and more.</p>
+        </div>
+
+        <!-- Category cards -->
+        <div class="category-grid" role="list" aria-label="Topic categories">
+          <button class="cat-card" data-query="What is the admission process?" role="listitem">
+            <span class="cat-card-icon" aria-hidden="true">📝</span>
+            Admissions
+          </button>
+          <button class="cat-card" data-query="What courses are offered by the college?" role="listitem">
+            <span class="cat-card-icon" aria-hidden="true">📚</span>
+            Courses
+          </button>
+          <button class="cat-card" data-query="Where can I find the fee structure?" role="listitem">
+            <span class="cat-card-icon" aria-hidden="true">💰</span>
+            Fees
+          </button>
+          <button class="cat-card" data-query="Where can I find the examination timetable?" role="listitem">
+            <span class="cat-card-icon" aria-hidden="true">📅</span>
+            Examinations
+          </button>
+          <button class="cat-card" data-query="What are the library timings?" role="listitem">
+            <span class="cat-card-icon" aria-hidden="true">📖</span>
+            Library
+          </button>
+          <button class="cat-card" data-query="Is hostel accommodation available?" role="listitem">
+            <span class="cat-card-icon" aria-hidden="true">🏠</span>
+            Hostel
+          </button>
+          <button class="cat-card" data-query="Is transportation available for students?" role="listitem">
+            <span class="cat-card-icon" aria-hidden="true">🚌</span>
+            Transport
+          </button>
+          <button class="cat-card" data-query="Where can I find scholarship information?" role="listitem">
+            <span class="cat-card-icon" aria-hidden="true">🏅</span>
+            Scholarships
+          </button>
+          <button class="cat-card" data-query="How can I contact the college administration?" role="listitem">
+            <span class="cat-card-icon" aria-hidden="true">📞</span>
+            Contact
+          </button>
+        </div>
+
+        <!-- Suggested questions -->
+        <div class="suggested-label">Suggested Questions</div>
+        <div class="suggested-list" role="list">
+          <button class="suggested-btn" data-query="What are the eligibility requirements for admission?">What are the eligibility requirements for admission?</button>
+          <button class="suggested-btn" data-query="How do I pay my college fees?">How do I pay my college fees?</button>
+          <button class="suggested-btn" data-query="How can I check my examination results?">How can I check my examination results?</button>
+          <button class="suggested-btn" data-query="What sports and extracurricular activities are available?">What sports and extracurricular activities are available?</button>
+          <button class="suggested-btn" data-query="What are the college office timings?">What are the college office timings?</button>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div class="messages" id="messages" role="log" aria-live="polite" aria-label="Conversation history"></div>
+
+      <!-- Error banner -->
+      <div class="error-bar" id="errorBar" role="alert" hidden>
+        <span id="errorMsg"></span>
+        <button id="errorClose" aria-label="Dismiss">✕</button>
+      </div>
+
+      <!-- Input area -->
+      <div class="input-area">
+        <label for="msgInput" class="sr-only">Type your question</label>
+        <textarea
+          id="msgInput"
+          class="msg-textarea"
+          placeholder="Type your question here…"
+          rows="1"
+          maxlength="500"
+          autocomplete="off"
+          aria-label="Message input"
+        ></textarea>
+        <button id="sendBtn" class="send-btn" aria-label="Send message">➤</button>
+      </div>
+      <p class="input-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line</p>
+
+    </section>
+
+    <!-- ===== FAQs VIEW ===== -->
+    <section class="view-panel" id="view-faqs" aria-label="Frequently asked questions">
+
+      <div class="view-header">
+        <span style="font-size:1.4rem" aria-hidden="true">📋</span>
+        <div>
+          <div class="view-header-title">Frequently Asked Questions</div>
+          <div class="view-header-sub">Browse all college FAQs by category</div>
+        </div>
+      </div>
+
+      <div class="view-body">
+        <input
+          type="search"
+          class="faq-filter"
+          id="faqFilterInput"
+          placeholder="🔍  Search FAQs…"
+          aria-label="Search FAQs"
+        />
+        <div id="faqList" aria-live="polite">
+          <!-- Rendered by chat.js -->
+          <p style="color:var(--muted); font-size:.85rem;">Loading FAQs…</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ===== HISTORY VIEW ===== -->
+    <section class="view-panel" id="view-history" aria-label="Conversation history">
+
+      <div class="view-header">
+        <span style="font-size:1.4rem" aria-hidden="true">🕐</span>
+        <div>
+          <div class="view-header-title">My History</div>
+          <div class="view-header-sub">Your conversation history from this session</div>
+        </div>
+      </div>
+
+      <div class="view-body">
+        <div id="historyList" aria-live="polite">
+          <div class="history-empty">
+            <div class="history-empty-icon" aria-hidden="true">💬</div>
+            <p>No conversation history yet.<br>Start chatting to see your history here.</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ===== FEEDBACK VIEW ===== -->
+    <section class="view-panel" id="view-feedback" aria-label="Submit feedback">
+
+      <div class="view-header">
+        <span style="font-size:1.4rem" aria-hidden="true">⭐</span>
+        <div>
+          <div class="view-header-title">Feedback</div>
+          <div class="view-header-sub">Help us improve the Smart College Assistant</div>
+        </div>
+      </div>
+
+      <div class="view-body">
+        <div class="feedback-form-card">
+          <h3>How was your experience?</h3>
+
+          <div class="form-group">
+            <div class="form-label">Overall Rating</div>
+            <div class="rating-buttons" id="ratingBtns" role="group" aria-label="Rating">
+              <button class="rating-btn" data-rating="1" aria-pressed="false">👍 Helpful</button>
+              <button class="rating-btn" data-rating="0" aria-pressed="false">👎 Not Helpful</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="feedbackComment">Comments (optional)</label>
+            <textarea
+              id="feedbackComment"
+              class="form-control"
+              rows="3"
+              maxlength="500"
+              placeholder="Tell us what could be improved…"
+            ></textarea>
+          </div>
+
+          <button class="btn btn-primary btn-full" id="submitFeedbackBtn">
+            Submit Feedback
+          </button>
+
+          <div id="feedbackResult" style="margin-top:.75rem; font-size:.85rem;" aria-live="polite"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ===== ABOUT VIEW ===== -->
+    <section class="view-panel" id="view-about" aria-label="About this application">
+
+      <div class="view-header">
+        <span style="font-size:1.4rem" aria-hidden="true">ℹ️</span>
+        <div>
+          <div class="view-header-title">About</div>
+          <div class="view-header-sub">Smart College Assistant</div>
+        </div>
+      </div>
+
+      <div class="view-body">
+        <div class="about-card">
+          <div class="about-hero">
+            <div class="about-hero-icon" aria-hidden="true">🎓</div>
+          </div>
+          <h3>Smart College Assistant</h3>
+          <p>
+            The Smart College Assistant is a web-based chatbot designed to help students
+            quickly access college-related information without visiting multiple offices
+            or searching through scattered documents.
+          </p>
+          <p><strong>What I can help with:</strong></p>
+          <ul>
+            <li>Admission procedures and eligibility requirements</li>
+            <li>Courses, departments, and syllabus information</li>
+            <li>Fee structures and payment methods</li>
+            <li>Examination timetables and results</li>
+            <li>Library, hostel, and transport facilities</li>
+            <li>Scholarship and student welfare information</li>
+            <li>Campus events and general college information</li>
+          </ul>
+          <p>
+            Answers are retrieved from a verified database of frequently asked questions.
+            When I cannot find a relevant answer, I will let you know and suggest
+            contacting the appropriate college department.
+          </p>
+          <p style="font-size:.8rem; color:var(--muted);">
+            <strong>Note:</strong> Always verify important information such as deadlines,
+            fees, and examination dates with official college sources.
+          </p>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ── RIGHT INFORMATION PANEL ────────────────────────────────── -->
+  <aside class="right-panel" aria-label="College information panel">
+
+    <!-- Quick Links -->
+    <div class="info-card">
+      <div class="info-card-title">
+        <span aria-hidden="true">⚡</span> Quick Links
+      </div>
+      <div class="quick-link-list">
+        <button class="quick-link" data-query="What is the admission process?">
+          <span class="quick-link-icon" aria-hidden="true">📝</span> Admissions
+        </button>
+        <button class="quick-link" data-query="Where can I find the fee structure?">
+          <span class="quick-link-icon" aria-hidden="true">💰</span> Fee Structure
+        </button>
+        <button class="quick-link" data-query="Where can I find the examination timetable?">
+          <span class="quick-link-icon" aria-hidden="true">📅</span> Exam Timetable
+        </button>
+        <button class="quick-link" data-query="What are the library timings?">
+          <span class="quick-link-icon" aria-hidden="true">📖</span> Library Hours
+        </button>
+        <button class="quick-link" data-query="Where can I find scholarship information?">
+          <span class="quick-link-icon" aria-hidden="true">🏅</span> Scholarships
+        </button>
+        <button class="quick-link" data-query="How can I contact the college administration?">
+          <span class="quick-link-icon" aria-hidden="true">📞</span> Contact Us
+        </button>
+      </div>
+    </div>
+
+    <!-- College Information -->
+    <div class="info-card">
+      <div class="info-card-title">
+        <span aria-hidden="true">🏫</span> College Information
+      </div>
+      <div class="college-info-list">
+        <div class="college-info-row">
+          <span class="college-info-icon" aria-hidden="true">📍</span>
+          <div class="college-info-text">
+            <strong>Address</strong>
+            [College Address], [City]
+          </div>
+        </div>
+        <div class="college-info-row">
+          <span class="college-info-icon" aria-hidden="true">📞</span>
+          <div class="college-info-text">
+            <strong>Phone</strong>
+            [Phone Number]
+          </div>
+        </div>
+        <div class="college-info-row">
+          <span class="college-info-icon" aria-hidden="true">📧</span>
+          <div class="college-info-text">
+            <strong>Email</strong>
+            [admin@college.edu]
+          </div>
+        </div>
+        <div class="college-info-row">
+          <span class="college-info-icon" aria-hidden="true">🕐</span>
+          <div class="college-info-text">
+            <strong>Office Hours</strong>
+            Mon – Sat · 9:00 AM – 5:00 PM
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Promo card -->
+    <div class="promo-card" role="complementary" aria-label="Campus update">
+      <div class="promo-card-icon" aria-hidden="true">🎉</div>
+      <h4>New Semester Starting Soon!</h4>
+      <p>Check admission dates, course registrations, and fee payment deadlines on the official college portal.</p>
+      <button class="promo-card-btn" onclick="document.querySelector('[data-query=\'What is the admission process?\']').click()">
+        Learn More
+      </button>
+    </div>
+
+  </aside>
+
+</div><!-- /app-body -->
+
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>

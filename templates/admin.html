@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard — Smart College Assistant</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=4" />
+</head>
+<body class="admin-page">
+
+<!-- ================================================================
+     ADMIN SHELL  (sidebar + header + content)
+     ================================================================ -->
+<div class="adm-shell">
+
+  <!-- ── Dark navy left sidebar ─────────────────────────────────── -->
+  <aside class="adm-sidebar" id="admSidebar" aria-label="Admin navigation">
+
+    <!-- Brand -->
+    <div class="adm-sidebar-brand">
+      <div class="adm-sidebar-logo" aria-hidden="true">🎓</div>
+      <div class="adm-sidebar-brand-text">
+        <span class="adm-sidebar-name">Smart College</span>
+        <span class="adm-sidebar-sub">Assistant</span>
+      </div>
+    </div>
+
+    <div class="adm-sidebar-divider"></div>
+
+    <!-- Navigation -->
+    <nav aria-label="Dashboard navigation">
+      <div class="adm-sidebar-section-label">Navigation</div>
+
+      <a href="{{ url_for('index') }}" class="adm-nav-item">
+        <span class="adm-nav-icon" aria-hidden="true">💬</span>
+        <span class="adm-nav-text">Chat Assistant</span>
+      </a>
+
+      <a href="{{ url_for('admin_dashboard') }}" class="adm-nav-item adm-nav-active" aria-current="page">
+        <span class="adm-nav-icon" aria-hidden="true">📋</span>
+        <span class="adm-nav-text">FAQ Management</span>
+        <span class="adm-nav-badge">{{ faqs | length }}</span>
+      </a>
+
+      <a href="{{ url_for('index') }}" class="adm-nav-item">
+        <span class="adm-nav-icon" aria-hidden="true">🕐</span>
+        <span class="adm-nav-text">My History</span>
+      </a>
+
+      <a href="{{ url_for('index') }}" class="adm-nav-item">
+        <span class="adm-nav-icon" aria-hidden="true">⭐</span>
+        <span class="adm-nav-text">Feedback</span>
+      </a>
+
+      <a href="{{ url_for('index') }}" class="adm-nav-item">
+        <span class="adm-nav-icon" aria-hidden="true">ℹ️</span>
+        <span class="adm-nav-text">About</span>
+      </a>
+    </nav>
+
+    <div class="adm-sidebar-divider"></div>
+
+    <!-- Admin section -->
+    <div class="adm-sidebar-section-label">Admin</div>
+    <a href="{{ url_for('admin_dashboard') }}" class="adm-nav-item">
+      <span class="adm-nav-icon" aria-hidden="true">⚙️</span>
+      <span class="adm-nav-text">Dashboard</span>
+    </a>
+
+    <!-- Logout at bottom -->
+    <div class="adm-sidebar-spacer"></div>
+    <div class="adm-sidebar-divider"></div>
+    <form method="POST" action="{{ url_for('admin_logout') }}">
+      <button type="submit" class="adm-nav-item adm-nav-logout" aria-label="Log out">
+        <span class="adm-nav-icon" aria-hidden="true">🚪</span>
+        <span class="adm-nav-text">Log Out</span>
+      </button>
+    </form>
+
+  </aside>
+
+  <!-- ── Main area (header + scrollable content) ────────────────── -->
+  <div class="adm-main-area">
+
+    <!-- Top header bar -->
+    <header class="adm-header">
+      <!-- Mobile menu toggle -->
+      <button class="adm-menu-toggle" id="admMenuToggle" aria-label="Toggle sidebar" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <div class="adm-header-title">
+        <h1 class="adm-header-h1">FAQ Management</h1>
+        <p class="adm-header-sub">Manage college information and chatbot responses</p>
+      </div>
+
+      <div class="adm-header-spacer"></div>
+
+      <!-- Status badge -->
+      <div class="adm-header-status">
+        <span class="adm-status-dot" aria-hidden="true"></span>
+        <span>System Online</span>
+      </div>
+
+      <!-- Admin avatar -->
+      <div class="adm-avatar" title="Administrator" aria-label="Administrator account">A</div>
+    </header>
+
+    <!-- Scrollable page content -->
+    <main class="adm-content" id="admContent">
+
+      <!-- Flash messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-list" id="flashList" role="alert">
+            {% for cat, msg in messages %}
+              <div class="flash flash-{{ cat }}">
+                <span>{{ msg }}</span>
+                <button type="button" class="flash-close" onclick="this.parentElement.remove()" aria-label="Dismiss">✕</button>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <!-- ── Statistics cards ──────────────────────────────────── -->
+      <section class="adm-stats-grid" aria-label="Dashboard statistics">
+
+        <div class="adm-stat-card adm-stat-blue">
+          <div class="adm-stat-icon adm-stat-icon-blue" aria-hidden="true">📋</div>
+          <div class="adm-stat-body">
+            <div class="adm-stat-value adm-stat-value-blue">{{ stats.total_faqs }}</div>
+            <div class="adm-stat-label">Total FAQs</div>
+          </div>
+        </div>
+
+        <div class="adm-stat-card adm-stat-indigo">
+          <div class="adm-stat-icon adm-stat-icon-indigo" aria-hidden="true">💬</div>
+          <div class="adm-stat-body">
+            <div class="adm-stat-value adm-stat-value-indigo">{{ stats.total_chats }}</div>
+            <div class="adm-stat-label">Chat Messages</div>
+          </div>
+        </div>
+
+        <div class="adm-stat-card adm-stat-violet">
+          <div class="adm-stat-icon adm-stat-icon-violet" aria-hidden="true">📊</div>
+          <div class="adm-stat-body">
+            <div class="adm-stat-value adm-stat-value-violet">{{ stats.total_feedback }}</div>
+            <div class="adm-stat-label">Feedback Received</div>
+          </div>
+        </div>
+
+        <div class="adm-stat-card adm-stat-green">
+          <div class="adm-stat-icon adm-stat-icon-green" aria-hidden="true">👍</div>
+          <div class="adm-stat-body">
+            <div class="adm-stat-value adm-stat-value-green">{{ stats.helpful }}</div>
+            <div class="adm-stat-label">Helpful Ratings</div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ── Two-column FAQ management ────────────────────────── -->
+      <div class="adm-faq-grid">
+
+        <!-- Left: Add FAQ form -->
+        <section class="adm-card" aria-labelledby="addFaqH">
+          <div class="adm-card-header">
+            <h2 class="adm-card-title" id="addFaqH">
+              <span aria-hidden="true">➕</span> Add New FAQ
+            </h2>
+          </div>
+          <div class="adm-card-body">
+            <form method="POST" action="{{ url_for('admin_add_faq') }}" novalidate>
+
+              <div class="form-group">
+                <label class="form-label" for="nq">
+                  Question <span class="required" aria-label="required">*</span>
+                </label>
+                <textarea id="nq" class="form-control" name="question" rows="2"
+                  required maxlength="500"
+                  placeholder="e.g. What is the admission process?"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="na">
+                  Answer <span class="required" aria-label="required">*</span>
+                </label>
+                <textarea id="na" class="form-control" name="answer" rows="4"
+                  required maxlength="2000"
+                  placeholder="Provide a clear, accurate answer."></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="nc">
+                  Category <span class="required" aria-label="required">*</span>
+                </label>
+                <input id="nc" class="form-control" type="text" name="category"
+                  list="catList" required maxlength="100"
+                  placeholder="e.g. Admissions" />
+                <datalist id="catList">
+                  {% for c in stats.categories %}
+                    <option value="{{ c.category }}">
+                  {% endfor %}
+                  <option value="Admissions">
+                  <option value="Courses">
+                  <option value="Fees">
+                  <option value="Examinations">
+                  <option value="Facilities">
+                  <option value="General">
+                </datalist>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="nk">Keywords</label>
+                <input id="nk" class="form-control" type="text" name="keywords"
+                  maxlength="500"
+                  placeholder="admission, apply, enroll" />
+                <p class="form-hint">Comma-separated keywords improve chatbot matching accuracy.</p>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-full adm-add-btn">
+                <span aria-hidden="true">➕</span> Add FAQ
+              </button>
+
+            </form>
+          </div>
+        </section>
+
+        <!-- Right: FAQ list -->
+        <section class="adm-card adm-card-tall" aria-labelledby="faqListH">
+          <div class="adm-card-header adm-card-header-row">
+            <h2 class="adm-card-title" id="faqListH">
+              <span aria-hidden="true">📋</span>
+              FAQ List
+              <span class="adm-list-count">{{ faqs | length }}</span>
+            </h2>
+            <div class="adm-search-wrap">
+              <span class="adm-search-icon" aria-hidden="true">🔍</span>
+              <input type="search" id="faqSearchInp" class="adm-search-inp"
+                placeholder="Filter FAQs…" aria-label="Filter FAQ list" />
+            </div>
+          </div>
+
+          <div class="adm-card-body adm-card-body-scroll">
+            {% if faqs %}
+              <div class="faq-tbl-wrap">
+                <table class="faq-tbl" id="faqTbl">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Question</th>
+                      <th scope="col">Category</th>
+                      <th scope="col">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for faq in faqs %}
+                    <tr class="faq-tbl-row" data-id="{{ faq.id }}">
+
+                      <!-- Row number -->
+                      <td class="adm-tbl-num">{{ loop.index }}</td>
+
+                      <!-- Question / Edit form -->
+                      <td class="adm-tbl-q">
+                        <span class="faq-view-text" id="qt{{ faq.id }}">{{ faq.question }}</span>
+
+                        <div class="faq-edit-form" id="ef{{ faq.id }}">
+                          <form method="POST"
+                            action="{{ url_for('admin_edit_faq', faq_id=faq.id) }}"
+                            novalidate>
+                            <div class="form-group">
+                              <label class="form-label sr-only">Question</label>
+                              <textarea class="form-control" name="question" rows="2"
+                                required maxlength="500">{{ faq.question }}</textarea>
+                            </div>
+                            <div class="form-group">
+                              <label class="form-label sr-only">Answer</label>
+                              <textarea class="form-control" name="answer" rows="3"
+                                required maxlength="2000">{{ faq.answer }}</textarea>
+                            </div>
+                            <div class="inline-pair">
+                              <div class="form-group">
+                                <input class="form-control" type="text" name="category"
+                                  list="catList" required maxlength="100"
+                                  value="{{ faq.category }}" placeholder="Category" />
+                              </div>
+                              <div class="form-group">
+                                <input class="form-control" type="text" name="keywords"
+                                  maxlength="500" value="{{ faq.keywords }}"
+                                  placeholder="Keywords" />
+                              </div>
+                            </div>
+                            <div class="edit-act">
+                              <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                              <button type="button" class="btn btn-outline btn-sm cancel-edit"
+                                data-id="{{ faq.id }}">Cancel</button>
+                            </div>
+                          </form>
+                        </div>
+                      </td>
+
+                      <!-- Category badge -->
+                      <td class="adm-tbl-cat">
+                        <span class="cat-badge cat-{{ faq.category }}">{{ faq.category }}</span>
+                      </td>
+
+                      <!-- Actions -->
+                      <td class="adm-tbl-actions">
+                        <div class="faq-tbl-actions">
+                          <button type="button" class="btn btn-outline btn-sm edit-btn"
+                            data-id="{{ faq.id }}"
+                            aria-label="Edit FAQ {{ loop.index }}">Edit</button>
+                          <form method="POST"
+                            action="{{ url_for('admin_delete_faq', faq_id=faq.id) }}"
+                            onsubmit="return confirm('Delete this FAQ? This cannot be undone.')">
+                            <button type="submit" class="btn btn-danger btn-sm"
+                              aria-label="Delete FAQ {{ loop.index }}">Delete</button>
+                          </form>
+                        </div>
+                      </td>
+
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            {% else %}
+              <div class="adm-empty-state">
+                <div class="adm-empty-icon" aria-hidden="true">📭</div>
+                <p>No FAQs yet.</p>
+                <p class="adm-empty-sub">Add your first FAQ using the form on the left.</p>
+              </div>
+            {% endif %}
+          </div>
+        </section>
+
+      </div><!-- /adm-faq-grid -->
+
+    </main><!-- /adm-content -->
+  </div><!-- /adm-main-area -->
+
+</div><!-- /adm-shell -->
+
+<!-- ── Overlay for mobile sidebar ──────────────────────────────── -->
+<div class="adm-overlay" id="admOverlay" aria-hidden="true"></div>
+
+<script>
+  /* ── Edit / Cancel toggle ─────────────────────────────────────── */
+  document.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.id;
+      document.getElementById('qt' + id).style.display = 'none';
+      document.getElementById('ef' + id).classList.add('visible');
+      btn.style.display = 'none';
+    });
+  });
+
+  document.querySelectorAll('.cancel-edit').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.id;
+      document.getElementById('qt' + id).style.display = '';
+      document.getElementById('ef' + id).classList.remove('visible');
+      document.querySelector(`.edit-btn[data-id="${id}"]`).style.display = '';
+    });
+  });
+
+  /* ── FAQ live filter ──────────────────────────────────────────── */
+  document.getElementById('faqSearchInp')?.addEventListener('input', function () {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll('.faq-tbl-row').forEach(row => {
+      row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  });
+
+  /* ── Auto-dismiss flash messages ─────────────────────────────── */
+  setTimeout(() => {
+    document.querySelectorAll('.flash').forEach(el => {
+      el.style.transition = 'opacity .4s';
+      el.style.opacity = '0';
+      setTimeout(() => el.remove(), 400);
+    });
+  }, 4500);
+
+  /* ── Mobile sidebar toggle ────────────────────────────────────── */
+  const sidebar  = document.getElementById('admSidebar');
+  const overlay  = document.getElementById('admOverlay');
+  const menuBtn  = document.getElementById('admMenuToggle');
+
+  function openSidebar() {
+    sidebar.classList.add('adm-sidebar-open');
+    overlay.classList.add('adm-overlay-show');
+    menuBtn.setAttribute('aria-expanded', 'true');
+  }
+  function closeSidebar() {
+    sidebar.classList.remove('adm-sidebar-open');
+    overlay.classList.remove('adm-overlay-show');
+    menuBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.contains('adm-sidebar-open') ? closeSidebar() : openSidebar();
+  });
+  overlay.addEventListener('click', closeSidebar);
+</script>
+
+</body>
+</html>
