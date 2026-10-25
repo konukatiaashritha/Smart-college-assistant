@@ -1,0 +1,826 @@
+Smart College Assistant — Project Documentation
+1. Project Overview
+Project name: Smart College Assistant
+Project type: Web-based application
+Domain: Education and conversational AI
+Difficulty: Beginner to intermediate
+Estimated development time: 7–14 days for a basic, polished version
+1.1 Problem statement
+Students frequently need information about college admissions, courses, fee structures, examination schedules, scholarships, departments, and campus facilities.
+
+This information may be scattered across college websites, notices, PDFs, and administrative offices. Students may have to search multiple sources or contact staff to get simple answers.
+
+The Smart College Assistant aims to provide a centralized, user-friendly chatbot through which students can ask college-related questions and receive relevant answers instantly.
+1.2 Proposed solution
+We will develop a web application that allows students to interact with a chatbot through a browser.
+
+The chatbot will:
+- Answer frequently asked questions about the institution.
+- Provide information about admissions, courses, fees, examinations, and facilities.
+- Match questions with relevant information stored in a database.
+- Handle unknown questions gracefully.
+- Maintain a conversation history during a chat session.
+- Allow an administrator to add, update, and delete FAQs.
+- Provide a responsive interface that works on laptops and mobile devices.
+1.3 Project objectives
+1. Reduce the time students spend searching for college information.
+2. Provide a simple interface for accessing frequently requested information.
+3. Demonstrate frontend and backend integration.
+4. Learn database operations through a practical application.
+5. Implement basic natural-language question matching.
+6. Build a maintainable project that can be extended with AI features later.
+2. Scope of the Project
+We will divide the application into three levels.
+Level	Features	Priority
+Basic	Chat interface, predefined FAQs, question matching, fallback response	Essential
+Intermediate	Database integration, conversation history, admin panel, feedback	Recommended
+Advanced	AI-powered responses, document-based question answering, analytics	Optional
+
+
+Important: We will complete the basic and intermediate features first. Advanced AI features should be added only after the core application works reliably.
+
+This approach keeps the project manageable and gives you a functional application even if you don't implement the advanced features.
+3. Technology Stack
+We'll use technologies that are beginner-friendly and work well on your Ubuntu laptop.
+Technology	Purpose	Why we're using it
+HTML5	Structure of the webpage	Creates the chat interface
+CSS3	Styling	Makes the application attractive and responsive
+JavaScript	Frontend interactions	Sends questions and displays responses without reloading the page
+Python	Main programming language	Implements the chatbot logic
+Flask	Backend framework	Connects the frontend, chatbot, and database
+SQLite	Database	Stores FAQs, conversations, and feedback
+Git and GitHub	Version control	Tracks changes and showcases your project
+
+
+How the technologies work together
+                 STUDENT
+                    |
+                    v
+          HTML + CSS + JavaScript
+               Chat Interface
+                    |
+                    | HTTP Request
+                    v
+              Python + Flask
+                    |
+                    v
+             Chatbot Engine
+                    |
+                    v
+               SQLite DB
+                    |
+                    v
+            Relevant Answer
+                    |
+                    v
+          Display Answer to Student
+
+For example, a student types:
+
+"What is the admission process?"
+
+JavaScript sends the question to Flask. The chatbot searches its FAQ database for a relevant answer. Flask returns the answer, and JavaScript displays it in the chat window.
+
+If no suitable answer exists, the chatbot asks the student to rephrase the question or contact the college administration.
+4. Functional Requirements
+Functional requirements describe what the application must do.
+4.1 Student module
+FR-01: Chat interface
+
+Students should be able to enter questions through a text box and receive responses.
+
+FR-02: FAQ responses
+
+The chatbot should answer questions about:
+- Admission procedures
+- Courses and departments
+- Fee structures
+- Examination schedules
+- Scholarships
+- Library facilities
+- Hostel facilities
+- Transportation
+- Contact information
+FR-03: Question matching
+
+The chatbot should recognize questions that have similar meanings or keywords.
+
+For example:
+- "How can I apply for admission?"
+- "Tell me about the admission process."
+- "What is the procedure to join the college?"
+These questions should ideally retrieve the same FAQ.
+
+FR-04: Unknown questions
+
+When the chatbot cannot find a sufficiently relevant answer, it should not invent information.
+
+FR-05: Conversation history
+
+Students should be able to see earlier messages during their current conversation.
+
+FR-06: Feedback
+
+Students should be able to indicate whether an answer was helpful.
+4.2 Administrator module
+FR-07: Administrator login
+
+Only an authorized administrator should be able to manage FAQs.
+
+FR-08: Add FAQs
+
+The administrator should be able to enter a question, answer, category, and relevant keywords.
+
+FR-09: Update FAQs
+
+The administrator should be able to correct outdated information.
+
+FR-10: Delete FAQs
+
+The administrator should be able to remove FAQs that are no longer relevant.
+
+FR-11: View FAQs
+
+The administrator should be able to view all existing FAQs.
+5. Non-Functional Requirements
+These describe how well the application should work.
+Requirement	Description
+Usability	The interface should be easy for students to understand
+Performance	Common FAQ responses should be returned quickly
+Reliability	Invalid requests should not crash the application
+Maintainability	The code should be organized into separate files
+Security	Admin access should be protected
+Scalability	The system should allow additional FAQs and future features
+Responsiveness	The interface should work on desktop and mobile screens
+Accuracy	Answers should come from verified college information
+
+
+Important: Since college information can change, use official information when populating the database. For the initial prototype, you can use clearly labelled sample data.
+6. Software and Installation Requirements
+Before starting, make sure you have:
+- Python 3
+- pip
+- A code editor such as VS Code
+- A web browser
+- Git
+- A terminal
+You do not need to install a separate database server because SQLite is included with Python.
+Step 1: Check Python
+Open your Ubuntu terminal and execute:
+python3 --version
+
+Check pip:
+python3 -m pip --version
+
+If Python is not installed, install it using:
+sudo apt update
+sudo apt install python3 python3-pip python3-venv
+
+Also install Git if needed:
+sudo apt install git
+
+Verify Git:
+git --version
+
+Step 2: Create the project directory
+Run:
+mkdir smart-college-assistant
+cd smart-college-assistant
+
+Open the folder in VS Code:
+code .
+
+If the code command is unavailable, open VS Code and select the folder manually.
+Step 3: Create a virtual environment
+A virtual environment keeps this project's Python dependencies separate from other projects.
+
+Run:
+python3 -m venv venv
+
+Activate it:
+source venv/bin/activate
+
+After activation, your terminal should show an environment indicator such as (venv).
+
+Whenever you return to the project in a new terminal, activate the environment again.
+Step 4: Install Flask
+Run:
+python -m pip install Flask
+
+Check the installation:
+python -m flask --version
+
+We will use Python's built-in sqlite3 module for the database, so no additional SQLite Python package is required.
+7. Project Folder Structure
+Create the following structure:
+smart-college-assistant/
+│
+├── app.py
+├── chatbot.py
+├── database.py
+├── requirements.txt
+├── .env.example
+├── .gitignore
+│
+├── templates/
+│   ├── index.html
+│   ├── admin_login.html
+│   └── admin.html
+│
+├── static/
+│   ├── css/
+│   │   └── style.css
+│   │
+│   └── js/
+│       └── chat.js
+│
+└── instance/
+    └── college.db
+
+Purpose of each file
+File	Responsibility
+app.py	Flask application and routes
+chatbot.py	Processes student questions and selects answers
+database.py	Creates database tables and performs database operations
+index.html	Student chat interface
+admin_login.html	Administrator login page
+admin.html	FAQ management dashboard
+style.css	Application styling
+chat.js	Handles chat messages and API requests
+requirements.txt	Lists Python dependencies
+.env.example	Documents required environment variables
+.gitignore	Excludes sensitive files and generated files from Git
+college.db	Stores the FAQs, chat records, and feedback
+
+
+The instance directory will be created automatically by the application if it doesn't exist.
+
+Implementation rule: Build and test one layer at a time. Do not create all the features at once and then try to debug the entire application.
+8. Database Design
+We will use SQLite because it is lightweight and suitable for this project.
+
+The database will contain three tables.
+8.1 FAQ table
+Stores questions and their verified answers.
+Field	Data type	Purpose
+id	INTEGER	Unique FAQ identifier
+question	TEXT	Main question
+answer	TEXT	Official answer
+category	TEXT	Admission, fees, facilities, etc.
+keywords	TEXT	Additional matching terms
+
+
+Example record:
+Field	Example
+Question	What is the admission process?
+Answer	Please refer to the official admissions page for the current admission procedure.
+Category	Admissions
+Keywords	apply, application, admission, join, eligibility
+
+
+The example answer is a placeholder. Replace it with verified information from the institution you choose.
+8.2 Chat history table
+Stores messages for debugging and basic analytics.
+Field	Data type	Purpose
+id	INTEGER	Unique record identifier
+session_id	TEXT	Identifies the browser session
+user_message	TEXT	Question asked
+bot_response	TEXT	Answer returned
+created_at	DATETIME	Time of the interaction
+
+
+For this student project, we will not require students to create accounts.
+
+Avoid storing unnecessary personal information in chat history.
+8.3 Feedback table
+Stores student feedback about chatbot responses.
+Field	Data type	Purpose
+id	INTEGER	Unique feedback identifier
+session_id	TEXT	Identifies the chat session
+faq_id	INTEGER, nullable	FAQ associated with the response
+rating	INTEGER	Helpful or not helpful
+created_at	DATETIME	Time of feedback
+
+
+This information can help identify FAQs that need better answers.
+9. Implementation Phase 1: Build the Database
+Create database.py.
+
+The file should provide functions for:
+1. Connecting to SQLite.
+2. Creating the database tables.
+3. Inserting sample FAQs.
+4. Retrieving all FAQs.
+5. Adding, editing, and deleting FAQs.
+6. Searching FAQs.
+7. Saving chat history.
+8. Saving feedback.
+Database implementation requirements
+Use parameterized SQL queries rather than constructing queries by concatenating user input.
+
+For example:
+cursor.execute(    "SELECT * FROM faqs WHERE category = ?",    (category,))
+
+
+This is safer than inserting a user-provided value directly into the SQL string.
+Sample FAQ data
+Start with at least 15–20 FAQs covering different categories.
+
+Suggested questions:
+
+Admissions
+1. What is the admission process?
+2. What are the eligibility requirements?
+3. Where can I find the application form?
+Courses
+4. What courses are offered?
+5. Which departments are available?
+6. Where can I find the course syllabus?
+
+Fees
+7. Where can I find the fee structure?
+8. How do I pay my college fees?
+9. Whom should I contact about fee-related issues?
+
+Examinations
+10. Where can I find the examination timetable?
+11. How can I check examination results?
+12. What should I do if I have an examination-related issue?
+
+Facilities
+13. What are the library timings?
+14. Is hostel accommodation available?
+15. Is transportation available?
+
+General information
+16. Where is the college located?
+17. How can I contact the administration?
+18. Where can I find scholarship information?
+19. What are the college office timings?
+20. How can I find information about campus events?
+
+Use accurate answers for your chosen institution. If information is unavailable, direct students to the relevant official department instead of inventing details.
+Testing Phase 1
+After completing database.py, verify that:
+- The database file is created.
+- All three tables exist.
+- Sample FAQs are inserted only once.
+- FAQs can be retrieved.
+- A new FAQ can be inserted.
+- An FAQ can be updated and deleted.
+Do not proceed until the database operations work correctly.
+10. Implementation Phase 2: Develop the Chatbot Engine
+Create chatbot.py.
+
+This is the core of the application.
+
+We will begin with rule-based FAQ matching, rather than immediately using a large language model.
+10.1 How FAQ matching works
+Suppose the database contains:
+
+Question: What are the library timings?
+
+Keywords: library, timing, opening, closing, hours
+
+A student asks:
+
+"When does the library close?"
+
+The chatbot should identify the important words:
+when, does, the, library, close
+
+It can ignore common words such as when, does, and the, then compare the remaining words with the keywords associated with each FAQ.
+
+If the match is strong enough, it returns the corresponding answer.
+
+Otherwise, it returns a fallback response.
+10.2 Recommended processing pipeline
+Student Question
+       |
+       v
+Normalize the Text
+       |
+       v
+Remove Common Words
+       |
+       v
+Extract Important Keywords
+       |
+       v
+Compare Against Stored FAQs
+       |
+       v
+Calculate Match Scores
+       |
+       v
+Is the Best Score High Enough?
+       |
+       +-------- Yes --------> Return FAQ Answer
+       |
+       +-------- No ---------> Return Fallback Response
+
+Text normalization
+Convert the question to lowercase and remove unnecessary punctuation.
+
+For example:
+"What are the Library Timings?"
+
+becomes:
+"what are the library timings"
+
+Keyword matching
+Use Python sets or frequency-based scoring to compare the question with each FAQ.
+
+A simple overlap score can be calculated as:
+\[
+\text{Score} =
+\frac{|Q \cap K|}{|Q|}
+\]
+Where:
+- \(Q\) is the set of important words in the user's question.
+- \(K\) is the set of keywords associated with an FAQ.
+- \(|Q \cap K|\) is the number of overlapping words.
+This score is easy to implement, but it has limitations. Different word forms, synonyms, and differently phrased questions may produce poor matches.
+
+For example, "When does the library shut?" might not match "What are the library timings?" unless relevant synonyms are included.
+
+You can improve this with:
+- More carefully chosen keywords.
+- Synonym mapping.
+- TF-IDF and cosine similarity.
+- Sentence embeddings in a later version.
+Important: Do not select the first FAQ that contains one matching word. Compare all candidates, apply a suitable threshold, and return a fallback when confidence is low.
+10.3 Fallback response
+When no FAQ matches sufficiently well, return a response such as:
+
+"I couldn't find a reliable answer to that question. Please try rephrasing it or contact the college administration."
+
+This makes the chatbot more reliable than a system that guesses answers.
+Testing Phase 2
+Test questions with different wording.
+Student question	Expected result
+What is the admission procedure?	Admission FAQ
+How do I apply to the college?	Admission FAQ, if supported by matching rules
+Tell me the library hours	Library FAQ
+Where can I find the exam timetable?	Examination FAQ
+Who won a particular cricket match?	Fallback response
+
+
+The last example is outside the chatbot's intended scope, so it should not fabricate an answer.
+11. Implementation Phase 3: Build the Flask Backend
+Create app.py.
+
+The Flask application connects the student interface to the chatbot engine and database.
+11.1 Routes
+A route defines what the server does when a browser requests a particular URL.
+
+We will need the following routes:
+Route	Method	Purpose
+/	GET	Display the student chat page
+/api/chat	POST	Process a question and return an answer
+/admin/login	GET, POST	Display and process admin login
+/admin/logout	POST	Log out the administrator
+/admin	GET	Display the FAQ management page
+/admin/faqs	POST	Add a new FAQ
+/admin/faqs/<id>/edit	POST	Update an FAQ
+/admin/faqs/<id>/delete	POST	Delete an FAQ
+/api/feedback	POST	Record feedback
+
+
+The FAQ-management routes must check that the administrator is authenticated.
+11.2 Chat API workflow
+When a student submits a question:
+1. The browser sends a POST request to /api/chat.
+2. Flask validates the incoming data.
+3. Flask obtains the current chat session identifier.
+4. The chatbot engine searches the FAQ database.
+5. Flask saves the question and response in the chat history.
+6. Flask returns a JSON response.
+7. JavaScript displays the response.
+Example JSON request:
+{
+  "message": "What are the library timings?"
+}
+
+Example JSON response:
+{
+  "answer": "Please refer to the verified library information.",
+  "faq_id": 4
+}
+
+The answer and FAQ identifier above are illustrative.
+Input validation
+The backend should reject:
+- Empty messages.
+- Messages that contain only whitespace.
+- Messages exceeding a reasonable length, such as 500 characters.
+- Requests with invalid JSON.
+- Requests that violate expected field types.
+Validate all incoming data on the server, even if JavaScript already validates it in the browser.
+11.3 Session management
+Use Flask sessions to identify a conversation.
+
+A session allows the application to associate multiple messages with the same browser session without requiring a student account.
+
+Configure a strong secret key through an environment variable. Never commit production secrets to GitHub.
+
+For an academic prototype, the session identifier can be stored with each chat message. Do not assume that a session identifier alone authenticates a user.
+11.4 Administrator authentication
+The administrator should log in before accessing the dashboard.
+
+For a beginner prototype:
+- Store the administrator password in an environment variable.
+- Never hardcode the password in publicly shared source code.
+- Protect every admin route.
+- Use a POST request for logout.
+- Configure secure session settings before deploying publicly.
+For a production application, use established authentication practices, password hashing, CSRF protection, rate limiting, and secure cookie settings.
+
+Testing Phase 3
+
+Verify that:
+- Flask starts without errors.
+- The home page loads.
+- The chat API accepts a valid question.
+- Invalid requests receive meaningful errors.
+- Answers come from the database.
+- Chat history is saved.
+- Unauthenticated users cannot access admin functions.
+12. Implementation Phase 4: Create the Frontend
+We will use HTML, CSS, and JavaScript.
+12.1 Chat interface
+Create templates/index.html.
+
+The page should contain:
+
+Header
+- Project name: Smart College Assistant.
+- Short description.
+- A small indicator showing that the chatbot is available.
+Welcome section
+- A greeting.
+- A brief explanation of the chatbot's purpose.
+- Suggested questions.
+Chat area
+- Student messages aligned to the right.
+- Chatbot messages aligned to the left.
+- A loading indicator while the chatbot processes a question.
+- A clear visual distinction between user and bot messages.
+Message input
+- Text box.
+- Send button.
+- Enter key support.
+- Error message area.
+Footer
+- A note that official college information should be verified where necessary.
+- A link to the relevant official website, if available.
+Suggested question buttons
+Provide buttons for:
+- Admissions
+- Courses
+- Fees
+- Examinations
+- Library
+- Hostel
+When clicked, each button can submit a relevant question to the chatbot.
+
+This helps students use the application even if they don't know what to type.
+12.2 Styling
+Create static/css/style.css.
+
+Use a simple, professional design.
+
+Recommended elements:
+- A centered chat panel.
+- Consistent spacing.
+- Readable fonts.
+- Rounded message bubbles.
+- Clear buttons and form fields.
+- A responsive layout for mobile devices.
+- Visible keyboard focus indicators.
+Avoid adding too many animations or decorative elements. The main goal is to make the application usable.
+12.3 JavaScript chat functionality
+Create static/js/chat.js.
+
+The JavaScript code should:
+1. Read the message from the input box.
+2. Check that it is not empty.
+3. Display the student's message.
+4. Show a loading indicator.
+5. Send the question to /api/chat using fetch().
+6. Read the JSON response.
+7. Display the chatbot's answer.
+8. Handle errors if the server is unavailable.
+9. Clear the input box.
+10. Scroll to the latest message.
+Use textContent or another safe text-rendering method when displaying messages. Avoid inserting untrusted user input directly through innerHTML, which can introduce cross-site scripting vulnerabilities.
+Testing Phase 4
+Check that:
+- Questions can be sent by clicking the button.
+- Pressing Enter sends a question.
+- The response appears without refreshing the page.
+- The loading indicator disappears after a response.
+- Multiple messages appear in the correct order.
+- The page works on a mobile-sized screen.
+- Network errors are handled gracefully.
+13. Implementation Phase 5: Build the Admin Dashboard
+The admin dashboard makes this project more useful than a basic chatbot demonstration.
+
+Create templates/admin_login.html and templates/admin.html.
+13.1 Login page
+Include:
+- Username or administrator identifier.
+- Password field.
+- Login button.
+- An error message for invalid credentials.
+Do not reveal whether the username or password alone was incorrect.
+13.2 Dashboard
+Display:
+- Total number of FAQs.
+- FAQ list.
+- Category labels.
+- Add FAQ form.
+- Edit controls.
+- Delete controls.
+Add FAQ form
+Fields:
+- Question
+- Answer
+- Category
+- Keywords
+Example:
+Question:
+Where can I find the examination timetable?
+
+Answer:
+Please check the official examination section
+for the latest timetable.
+
+Category:
+Examinations
+
+Keywords:
+exam, examination, timetable, schedule
+
+This is sample content. Replace it with information appropriate to your institution.
+Edit functionality
+When the administrator updates an FAQ:
+1. Validate the form.
+2. Verify that the FAQ exists.
+3. Update the database record.
+4. Show a success message.
+5. Refresh the displayed FAQ list.
+Delete functionality
+When an administrator deletes an FAQ:
+1. Ask for confirmation.
+2. Submit a POST request.
+3. Verify authorization on the server.
+4. Delete the record.
+5. Update the dashboard.
+Use CSRF protection for state-changing form submissions. Do not use a GET request to delete an FAQ.
+Testing Phase 5
+Verify that:
+- The login page rejects invalid credentials.
+- The dashboard is inaccessible before login.
+- An administrator can add an FAQ.
+- The new FAQ appears in the chat system.
+- An administrator can edit and delete FAQs.
+- Logging out prevents further access to protected pages.
+14. Implementation Phase 6: Add Feedback
+Feedback helps you evaluate whether the chatbot is useful.
+
+After each answer, display two buttons:
+- 👍 Helpful
+- 👎 Not helpful
+When a student clicks one of these buttons, JavaScript sends a request to /api/feedback.
+
+The backend should:
+1. Validate the rating.
+2. Check the associated FAQ identifier, if provided.
+3. Save the feedback in SQLite.
+4. Return a success response.
+Do not trust the FAQ identifier supplied by the browser without checking that it exists.
+How to use feedback
+Suppose students frequently mark the admission FAQ as unhelpful.
+
+Possible reasons include:
+- The answer is outdated.
+- The answer is incomplete.
+- The chatbot is matching the wrong FAQ.
+- The question uses wording the system doesn't recognize.
+Use these results to improve the answer or the matching logic.
+
+For a simple prototype, feedback analytics can be added later. Recording feedback correctly is the first priority.
+15. Implementation Phase 7: Testing and Evaluation
+Testing is essential. A chatbot that looks attractive but returns incorrect answers is not a successful project.
+15.1 Functional testing
+Test	Expected result
+Submit a valid question	Relevant answer is returned
+Submit an empty question	Validation message appears
+Submit a very long question	Request is rejected safely
+Ask an unrelated question	Fallback response appears
+Add a new FAQ	FAQ is stored successfully
+Edit an FAQ	Updated answer is returned
+Delete an FAQ	Deleted FAQ is no longer available
+Open admin dashboard without login	Access is denied
+Submit invalid login details	Login is rejected
+Submit feedback	Feedback is saved
+Restart the application	Stored FAQs remain available
+
+
+15.2 Chatbot accuracy testing
+Create a test set of at least 30 questions.
+
+Include:
+- Questions that closely match stored FAQs.
+- Questions with different wording.
+- Questions containing spelling mistakes.
+- Ambiguous questions.
+- Questions unrelated to college information.
+Record the expected answer or fallback for each test.
+
+Calculate answer-selection accuracy for questions with known expected FAQs:
+\[
+\text{Accuracy} =
+\frac{\text{Correct FAQ selections}}
+{\text{Total test questions with expected FAQs}}
+\times 100
+\]
+Also track:
+- Correct fallback rate for out-of-scope questions.
+- Incorrect answer rate.
+- Response time.
+- Student feedback.
+Don't report a made-up accuracy figure. Calculate it from your actual test results.
+
+For a rule-based system, matching accuracy can vary substantially with the question wording and the quality of the FAQ keywords.
+15.3 Security testing
+Test that:
+- Unauthenticated requests cannot modify FAQs.
+- User messages cannot execute SQL.
+- Invalid JSON does not crash the application.
+- User input is rendered as text rather than executable HTML.
+- Secrets are not included in Git commits.
+- Feedback and chat endpoints validate their inputs.
+- The application does not expose detailed stack traces to users.
+16. Implementation Phase 8: Run the Application
+Once the required files are implemented, install dependencies:
+python -m pip install -r requirements.txt
+
+Start Flask using:
+flask --app app run --debug
+
+Open the address displayed in the terminal, normally:
+
+http://127.0.0.1:5000/
+
+To access the administrator login, open:
+
+http://127.0.0.1:5000/admin/login
+
+These are local development addresses. They will only work while the application is running on your computer.
+
+Security warning: Debug mode is intended for local development. Do not expose a debug-enabled Flask server to the public internet.
+17. Optional Advanced Features
+Only consider these after the basic chatbot, database, and admin panel work correctly.
+17.1 TF-IDF and cosine similarity
+Use scikit-learn to represent questions numerically and compare their similarity.
+
+This can improve matching when questions use different wording.
+
+Useful concepts to learn:
+- Text preprocessing
+- TF-IDF vectorization
+- Cosine similarity
+- Similarity thresholds
+17.2 AI-powered responses
+An LLM API can make the chatbot more flexible when students ask questions that do not closely resemble stored FAQs.
+
+However, it introduces:
+- API costs or usage limits.
+- Network dependency.
+- Additional configuration.
+- Potentially incorrect answers.
+For a college assistant, retrieve relevant official information first and instruct the model to answer only from that information. If the necessary information is missing, it should say so rather than invent an answer.
+
+Never expose an API key in frontend JavaScript or commit it to GitHub.
+17.3 Document-based question answering
+Allow administrators to upload approved college documents, such as:
+- Student handbooks.
+- Admission guidelines.
+- Examination regulations.
+- Fee circulars.
+The application could extract relevant passages and use them to answer student questions.
+
+This feature requires additional work around document parsing, indexing, access control, and keeping information up to date.
+17.4 Multilingual support
+Allow students to ask questions in English and other languages supported by your chosen matching or language model.
+
+This can improve accessibility, but it should be tested with real questions in each supported language.
+17.5 Analytics dashboard
+Show:
+- Most frequently asked questions.
+- Questions that received fallback responses.
+- FAQs with negative feedback.
+- Number of interactions per day.
+Use aggregated statistics and avoid collecting unnecessary personal information.
